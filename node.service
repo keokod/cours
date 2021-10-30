@@ -1,0 +1,34 @@
+[Unit]
+Description=demon sonnerie ohkod
+
+[Service]
+# set the working directory to have consistent relative paths
+WorkingDirectory=/home/pi
+
+ExecStart=/usr/bin/node sonnerie.js
+
+# if process crashes, always try to restart
+Restart=always
+
+# let 500ms between the crash and the restart
+RestartSec=500ms
+
+# send log tot syslog here (it doesn't compete with other log config in the app itself)
+StandardOutput=syslog
+StandardError=syslog
+
+# nodejs process name in syslog
+SyslogIdentifier=nodejs
+
+# user and group starting the app
+User=pi
+Group=pi
+
+# set the environement (dev, prod…)
+Environment=NODE_ENV=production
+
+
+[Install]
+# start node at multi user system level (= sysVinit runlevel 3)
+WantedBy=multi-user.target
+#systemctl enable node = permet de lancer au démarrage du pi zero
