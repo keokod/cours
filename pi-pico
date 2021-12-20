@@ -1,40 +1,44 @@
-import time
+# Example using PIO to drive a set of WS2812 LEDs.
+import utime,array, time
+from machine import Pin
+from kubii import Kubii
+import rp2
 import ws2812b
 button_black = machine.Pin(2, machine.Pin.IN, machine.Pin.PULL_UP)
+p1 = Kubii(22, 30) # borche d'entréer 22 et nombre de led 20
+i_courant = 0
+# Configure the number of WS2812 LEDs.
+NUM_LEDS = p1.total_led
+PIN_NUM = p1.pin_in
+brightness = 0.2
+strip = ws2812b.ws2812b(p1.total_led, 0,22)
 
-numpix = 30
-strip = ws2812b.ws2812b(numpix, 0,22)
-
-RED = (255, 0, 0)
-ORANGE = (255, 165, 0)
-YELLOW = (255, 150, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-INDIGO = (75, 0, 130)
-VIOLET = (138, 43, 226)
-COLORS = (RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO, VIOLET)
+@rp2.asm_pio(sideset_init=rp2.PIO.OUT_LOW, out_shiftdir=rp2.PIO.SHIFT_LEFT, autopull=True, pull_thresh=24)
+def ws2812():
+    T1 = 2
+    T2 = 5
+    T3 = 3
+    wrap_target()
+    label("bitloop")
+    out(x, 1)               .side(0)    [T3 - 1]
+    jmp(not_x, "do_zero")   .side(1)    [T1 - 1]
+    jmp("bitloop")          .side(1)    [T2 - 1]
+    label("do_zero")
+    nop()                   .side(0)    [T2 - 1]
+    wrap()
 
 while True:
-    for color in COLORS:
-        for i in range(numpix):
-            
-                
-while True:
+    utime.sleep(0.01)
+    print("suite ...")
     if button_black.value() == 0:
-        print("========== START =========")
-   i= i +1
-            strip.set_pixel(i,255,255,255)
-            time.sleep(0.02)
-            #strip.set_pixel(i-1,0,0,0)
-            strip.show()
-        
-        #rotate_right(self, num_of_pixels)
-        
-        
-    else:
-        print("========== ETEINT =========") 
-        pixels_fill(p1.eteint)
-        pixels_show()
-        utime.sleep(0.25)
+        strip.set_pixel(i_courant,255,255,255)
+        if i_courant< 29 : i_courant = i_courant +1
+        strip.show()
+            
+    if button_black.value() == 1:
+        print("off")
+        strip.set_pixel(i_courant,0,0,0)
+        if i_courant > 0 : i_courant = i_courant -1
+        strip.show()
     pass
-         
+
