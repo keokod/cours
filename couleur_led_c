@@ -1,0 +1,70 @@
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+ #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+#endif
+
+// Which pin on the Arduino is connected to the NeoPixels?
+#define PIN        5// On Trinket or Gemma, suggest changing this to 1
+#define PIN2        4// On Trinket or Gemma, suggest changing this to 1
+// How many NeoPixels are attached to the Arduino?
+#define NUMPIXELS 16 // Popular NeoPixel ring size
+
+// When setting up the NeoPixel library, we tell it how many pixels,
+// and which pin to use to send signals. Note that for older NeoPixel
+// strips you might need to change the third parameter -- see the
+// strandtest example for more information on possible values.
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN2, NEO_GRB + NEO_KHZ800);
+#define DELAYVAL 100 // Time (in milliseconds) to pause between pixels
+
+const int Push_button_pin = 2;    
+const int led =  14;       
+int Push_button_state = 0;
+
+void setup() {
+  pinMode(Push_button_pin, INPUT);
+  pinMode(led, OUTPUT);
+
+#if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+  clock_prescale_set(clock_div_1);
+#endif
+  // END of Trinket-specific code.
+
+  pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+}
+
+void loop() {
+
+
+  //generate a random number
+  int randomNumber = random(1,255);
+    int randomNumber1 = random(1,255);
+        int randomNumber2 = random(1,255);
+
+ 
+  Push_button_state = digitalRead(Push_button_pin);
+  if (Push_button_state == LOW) {
+    for(int i=0; i<NUMPIXELS; i++) { // For each pixel...
+  pixels.clear(); 
+      if(randomNumber2 < 100){
+        randomNumber2 =0;
+      }
+      
+      pixels.setPixelColor(i, pixels.Color(randomNumber, randomNumber2, randomNumber1));
+      pixels.show();   // Send the updated pixel colors to the hardware.
+      delay(DELAYVAL); // Pause before next pass through loop
+      }
+   }
+
+   if (Push_button_state == HIGH) {
+      pixels.clear(); 
+
+    for(int i=NUMPIXELS; i>0; i--) { // For each pixel...
+
+      pixels.setPixelColor(i, pixels.Color(255, 255, 255));
+      pixels.show();   // Send the updated pixel colors to the hardware.
+      delay(DELAYVAL); // Pause before next pass through loop
+      }
+   }
+
+}
