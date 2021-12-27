@@ -1,4 +1,4 @@
-# Example using PIO to drive a set of WS2812 LEDs.
+# Example using PIO to drive a set of WS2812 https://www.iottrends.tech/blog/how-to-interface-uart-communication-using-micropython/LEDs.
 import utime,array, time
 from machine import Pin
 from kubii import Kubii
