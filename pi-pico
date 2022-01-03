@@ -51,3 +51,45 @@ while True:
 pico_uart1 = UART(1, baudrate=115200, tx=Pin(4), rx=Pin(5), bits=8, parity=None, stop=1)
 player = Player(uart=pico_uart1, volume=10)
 
+
+import npxMp3
+from machine import Pin, UART
+import array, time
+
+interStart = Pin(17, Pin.IN, Pin.PULL_UP) # broche en entree pullup actif
+uart = UART(0, baudrate=9600) # on défni l 'UART en pin 0 et 1
+isPause = 0;
+interStart.irq(
+
+        lambda pin: print(
+            "STOP !:", stop()
+        ), # fonction inline
+        Pin.IRQ_FALLING # mode de déclenchement
+)
+
+def stop():
+    print("== pause ==")
+    print(isPause)
+    if(isPaus === 0)
+        isPause = 1
+    npxMp3.pause();
+    
+    
+if interStart.value() == 1:
+    stop()
+    
+    
+    
+if interStart.value() == 0:
+    print("========== START =========")
+
+    couleur = (255,255,255)
+    npxMp3.pixels_set(10, couleur)
+    npxMp3.pixels_show()
+    #mp3
+    npxMp3.reset()
+    npxMp3.initMP3()
+    npxMp3.play()
+
+    time.sleep(5000)
+
